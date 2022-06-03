@@ -8,7 +8,11 @@ import { TaskCard } from './task-card'
 import { useTask } from '../contexts/tasks'
 import empty from '../assets/clipboard.svg'
 
-export function TaskList() {
+interface ListProps {
+	onOpen: (id:string) => void;
+}
+
+export function TaskList({ onOpen }:ListProps) {
 	const {
 		tasks, removeTask,
 		toggleTaskCompletition
@@ -55,7 +59,7 @@ export function TaskList() {
 			key={task.id}
 			task={task}
 			onComplete={()=>toggleTaskCompletition(task.id)}
-			onUpdate={()=>{}}
+			onUpdate={()=>onOpen(task.id)}
 			onDelete={()=>removeTask(task.id)}
 		/>
 	))

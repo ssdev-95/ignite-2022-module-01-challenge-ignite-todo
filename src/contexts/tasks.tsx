@@ -1,5 +1,9 @@
 import {
-	useState, createContext, useContext, ReactNode
+	useState,
+	useEffect,
+	createContext,
+	useContext,
+	ReactNode
 } from 'react'
 
 export type ITask = {
@@ -22,8 +26,13 @@ interface ProviderProps{
 
 const TasksContext = createContext({} as TasksData)
 
+const KEY = "@todo:tasks-list"
 export function TasksProvider({ children }:ProviderProps) {
-	const [tasks, setTasks] = useState<ITask[]>([])
+	const [tasks, setTasks] = useState<ITask[]>(()=>{
+			const stored = localStorage.getItem(KEY)
+			const tasks = stored ? JSON.parse(stored) : [];
+			return tasks;
+	})
 
 	function generateID() {
 		const id = `${Date.now()}-${String(tasks.length).padStart("0", 3)}`
@@ -32,16 +41,30 @@ export function TasksProvider({ children }:ProviderProps) {
 	}
 
 	function createTask(text:string) {
+		try {
 		const updated = [...tasks, {
 			text,
 			isDone: false,
 			id: generateID()
 		}]
+
+		localStorage.setItem(
+			KEY,
+			JSON.stringify(updated)
+		)
+
 		setTasks(updated)
+		} catch (err) {
+		 alert(err)
+		}
 	}
 
 	function removeTask(id:string) {
 		const updated = tasks.filter(task => task.id !== id)
+		localStorage.setItem(
+			KEY,
+			JSON.stringify(updated)
+		)
 		setTasks(updated)
 	}
 
@@ -53,6 +76,11 @@ export function TasksProvider({ children }:ProviderProps) {
 
 			return task;
 		})
+
+		localStorage.setItem(
+			KEY,
+			JSON.stringify(updated)
+		)
 
 		setTasks(updated)
 	}
@@ -68,6 +96,11 @@ export function TasksProvider({ children }:ProviderProps) {
 				isDone: !task.isDone
 			}
 		})
+
+		localStorage.setItem(
+			KEY,
+			JSON.stringify(updated)
+		)
 
 		setTasks(updated)
 	}

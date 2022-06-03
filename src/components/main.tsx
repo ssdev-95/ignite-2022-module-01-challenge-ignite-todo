@@ -8,14 +8,17 @@ import {
 	Input,
 	Image,
 	Text,
-	Container
+	Container,
+	useDisclosure
 } from '@chakra-ui/react'
 
 import { useTask, ITask } from '../contexts/tasks'
 import { TaskList } from './task-list'
+import { UpdateTaskModal } from './task-modal'
 import plus from '../assets/plus.svg'
 
 export function Main() {
+	const { isOpen, onOpen, onClose } = useDisclosure()
 	const { createTask } = useTask()
 	const [task, setTask] = useState("")
 
@@ -33,13 +36,18 @@ export function Main() {
 		}
 	}
 
+	function handleOpenModal(id:string) {
+		localStorage.setItem("@todo:task-id",id)
+		setTimeout(onOpen, 1000)
+	}
+
 	return(
 		<VStack
 			as="main"
 			width="56.25rem"
 			maxW="95vw"
 			height="calc(100vh - 12rem)"
-			transform="translateY(-3rem)"
+			transform="translateY(-2.5rem)"
 			space="2.25rem"
 		>
 			<Container
@@ -56,6 +64,11 @@ export function Main() {
 					flex={1}
 					value={task}
 					onChange={handleChange}
+					color="gray.100"
+					placeholder="eg. Hack the NASA.."
+					_placeholder={{
+						color:"gray.300"
+					}}
 				/>
 				<IconButton
 					as="button"
@@ -89,7 +102,12 @@ export function Main() {
 				/>
 			</Container>
 
-			<TaskList />
+			<TaskList onOpen={handleOpenModal}/>
+
+			<UpdateTaskModal
+				isOpen={isOpen}
+				onClose={onClose}
+			/>
 		</VStack>
 	)
 }
