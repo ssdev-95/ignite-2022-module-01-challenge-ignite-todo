@@ -89,15 +89,12 @@ export function Main() {
 						outlineColor: "transparent"
 					}}
 					icon={
-						<>
-							<Text color="gray.100">Add</Text>
-							<Image
-								as="img"
-								src={plus}
-								alt="Another svg icon, a plus simbol"
-								ml="0.25rem"
-							/>
-						</>
+						<Image
+							as="img"
+							src={plus}
+							alt="Another svg icon, a plus simbol"
+							height="1.5rem"
+						/>
 					}
 				/>
 			</Container>
